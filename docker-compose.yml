@@ -3,24 +3,73 @@ version: '2'
 services:
     reverseproxy:
         image: reverseproxy
+    networks:
+      - lan
         ports:
             - 8080:8080
             - 8081:8081
         restart: always
 
-    nginx:
+  core1:
+    image: neo4j:3.3.1-enterprise
         depends_on:
             - reverseproxy
-        image: nginx:alpine
-        ports:
-            - 81:80
-        restart: always
+    networks:
+      - lan
+    ports:
+      - 7474:7474
+      - 6477:6477
+      - 7687:7687
+    volumes:
+      - /storage/nfs/neo4j-${HOSTNAME}/neo4j-core1/conf:/conf
+      - /storage/nfs/neo4j-${HOSTNAME}/neo4j-core1/data:/data
+      - /storage/nfs/neo4j-${HOSTNAME}/neo4j-core1/logs:/logs
+      - /storage/nfs/neo4j-${HOSTNAME}/neo4j-core1/plugins:/plugins
+    environment:
+#      - NEO4J_AUTH=none
+      - NEO4J_AUTH=neo4j/${PASSWORD}
+      - NEO4J_dbms_mode=CORE
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_causalClustering_expectedCoreClusterSize=3
+      - NEO4J_causalClustering_initialDiscoveryMembers=core1:5000,core2:5000,core3:5000
+      - NEO4J_dbms_connector_http_listen__address=:7474
+      - NEO4J_dbms_connector_https_listen__address=:6477
+      - NEO4J_dbms_connector_bolt_listen__address=:7687
+      - NEO4J_dbms_security_allow__csv__import__from__file__urls=true
+      - NEO4J_dbms_memory_heap_max__size=8192M
 
-    apache:
+  core2:
+    image: neo4j:3.3.1-enterprise
         depends_on:
             - reverseproxy
-        image: httpd:alpine
-        ports:
-            - 82:80
-        restart: always
+    networks:
+      - lan
+    ports:
+      - 7475:7475
+      - 6478:6478
+      - 7688:7688
+    volumes:
+      - /storage/nfs/neo4j-${HOSTNAME}/neo4j-core2/conf:/conf
+      - /storage/nfs/neo4j-${HOSTNAME}/neo4j-core2/data:/data
+      - /storage/nfs/neo4j-${HOSTNAME}/neo4j-core2/logs:/logs
+      - /storage/nfs/neo4j-${HOSTNAME}/neo4j-core1/plugins:/plugins
+    environment:
+      - NEO4J_AUTH=neo4j/${PASSWORD}
+      - NEO4J_dbms_mode=CORE
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_causalClustering_expectedCoreClusterSize=3
+      - NEO4J_causalClustering_initialDiscoveryMembers=core1:5000,core2:5000,core3:5000
+      - NEO4J_dbms_connector_http_listen__address=:7475
+      - NEO4J_dbms_connector_https_listen__address=:6478
+      - NEO4J_dbms_connector_bolt_listen__address=:7688
+      - NEO4J_dbms_security_allow__csv__import__from__file__urls=true
+      - NEO4J_dbms_memory_heap_max__size=8192M
+
+
+
+
+
+
+
+
 
