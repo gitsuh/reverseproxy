@@ -18,7 +18,7 @@ fi
 
 
 
-SUBJECT="/C=US/ST=Cincinnati/L=Ohio/O=EPA/OU=Hosting/CN="$HOSTNAME
+SUBJECT="/C=US/ST=New_York_City/L=New_York/O=Docker/OU=Docker/CN="$HOSTNAME
 openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
     -subj $SUBJECT \
     -keyout $HOSTNAME.key  -out $HOSTNAME.crt
