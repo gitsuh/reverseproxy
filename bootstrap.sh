@@ -3,12 +3,12 @@
 if [ ! -f .env ]; then
     
 	if [ -z "$1" ]; then
-	    echo -e "\nPlease supply FQDN '$0 <fqdn> <password>' to run the bootstrap script.\n"
+	    echo -e "\nPlease supply FQDN '$0 <fqdn> <password for neo4j>' to run the bootstrap script.\n"
 	    exit 1
 	fi
 
 	if [ -z "$2" ]; then
-	    echo -e "\nPlease supply password '$0 <fqdn> <password>' to run the bootstrap script.\n"
+	    echo -e "\nPlease supply password '$0 <fqdn> <password for neo4j>' to run the bootstrap script.\n"
 	    exit 1
 	fi
 
